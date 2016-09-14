@@ -71,7 +71,11 @@ Passpack.prototype.middleware = function middleware(name) {
 
   return function cached(req, res, next) {
     if (!req.passport[fn]) {
-      req.passport[fn] = req.passport[name].apply(req.passport, args);
+        if (name==='initialize' && args[0]==='instanceUserProperty') {
+            req.passport[fn] = req.passport[name].apply(req.passport, {userProperty: req.passport.instanceUserProperty});
+        } else {
+            req.passport[fn] = req.passport[name].apply(req.passport, args);            
+        }
     }
 
     return req.passport[fn](req, res, next);
